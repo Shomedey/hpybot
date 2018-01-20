@@ -1,7 +1,12 @@
+import discord
+
 class C:
 	
 	def __init__(self, client):
 		self.bot = client
+		self.disgd = discord
+		self.discord = discord
+		self.disco = discord
 		
 	async def on_connect(self):
 		pass
