@@ -7,6 +7,7 @@ class DiscordBot(discord.Client):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.commands = []
+		self.discord = discord
 		self.loaded = False
 		
 	def add_command(self, object):
