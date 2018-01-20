@@ -6,6 +6,9 @@ class C:
 	async def on_connect(self):
 		pass
 		
+	async def on_loaded(self):
+		pass
+		
 	async def on_ready(self):
 		pass
 	
