@@ -18,9 +18,6 @@ class C:
 	async def on_member_update(self, before, after):
 		pass
 		
-	async def on_command(self, message, command, args):
-		pass
-		
 	async def on_message_edit(self, before, after):
 		pass
 		
