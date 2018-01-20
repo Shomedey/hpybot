@@ -130,19 +130,16 @@ class DiscordBot(discord.Client):
 	async def check_command(self, message):
 		command = None
 		args = None
-		for prefix in self.config["prefixs"]:
-			if message.content.startswith(prefix):
-				words = message.content[len(prefix):].split(" ")
-				if len(words) != 0:
-					command = words[0]
-					if len(words) > 1:
-						args = words[1:]
-					else:
-						args = []
-				else:
-					command = args = None
-			else:
-				command = args = None
+		if message.author.bot == False:
+			for prefix in self.config["prefixs"]:
+				if message.content.startswith(prefix):
+					words = message.content[len(prefix):].split(" ")
+					if len(words) != 0:
+						command = words[0]
+						if len(words) > 1:
+							args = words[1:]
+						else:
+							args = []
 		
 		if command != None:
 			await self.on_command(message, command, *args)
