@@ -1,4 +1,4 @@
-﻿import discord, asyncio, json, os, aiohttp, random, textwrap, io, importlib, sys
+﻿import discord, asyncio, json, os, aiohttp, random, textwrap, io, importlib, sys, sqlite3
 from contextlib import redirect_stdout
 from discord import Webhook, AsyncWebhookAdapter
 
@@ -9,6 +9,20 @@ class DiscordBot(discord.Client):
 		self.commands = []
 		self.discord = discord
 		self.loaded = False
+		self.config = configuration # BOT CONFIGURATION
+		self.db = sqlite3.connect("data/hpybot.db") # DATABASE
+		
+	def sql(*args):
+		cursor = self.database.cursor()
+		if len(args) != 0:
+			for arg in args:
+				cursor.execute(arg)
+			self.database.commit()
+		liste = cursor.fetchall()
+		cursor.close()
+		if len(liste) != 0:
+			return liste
+		return None
 		
 	def add_command(self, object):
 		self.commands.append(object)
@@ -47,9 +61,6 @@ class DiscordBot(discord.Client):
 	async def on_connect(self):
 		self.log("est maintenant connecté à Discord", me=True)
 		self.log("ID: {0.id}".format(self.user))
-		
-		for command in self.commands:
-			self.loop.create_task(command.on_connect())
 
 	async def on_ready(self):
 		if self.loaded == False: # Premier démarrage ?
@@ -119,7 +130,7 @@ class DiscordBot(discord.Client):
 	async def check_command(self, message):
 		command = None
 		args = None
-		for prefix in ["hpybot ","hpybot"]:
+		for prefix in self.config["prefixs"]:
 			if message.content.startswith(prefix):
 				words = message.content[len(prefix):].split(" ")
 				if len(words) != 0:
@@ -129,7 +140,7 @@ class DiscordBot(discord.Client):
 					else:
 						args = []
 				else:
-					command = None
+					command = args = None
 			else:
 				command = args = None
 		
@@ -155,9 +166,13 @@ class DiscordBot(discord.Client):
 			self.loop.create_task(command.on_member_update(before, after))
 			
 # Chargement et vérification de la configuration
-print("[•] TOKEN ?")
-token = input(">>> ")
+with open("config.json", "r", encoding="utf8") as content:
+	configuration = json.load(content)
+if configuration["token"] in ["YOUR_TOKEN_HERE", "token", "", None]:
+	print("[•] /!\ Please edit the config.json")
+	while 1:
+		input("")
 			
 # Démarrage du bot
 client = DiscordBot()
-client.run(token)
+client.run(configuration["token"])

@@ -4,9 +4,8 @@ class C:
 	
 	def __init__(self, client):
 		self.bot = client
-		self.disgd = discord
 		self.discord = discord
-		self.disco = discord
+		self.db = self.bot.db
 		
 	async def on_connect(self):
 		pass
