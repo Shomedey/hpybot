@@ -51,7 +51,7 @@ class ReportSystem(C):
 		"""Set the report channel for the reports
 		
 {0}setreportchannel <off/@mention>"""
-		if message.author.guild_permissions.manage_guild:
+		if message.author.guild_permissions.manage_guild or message.author.id == self.bot.user.id:
 			if len(args) > 0:
 				channel_id = 0
 				channel_id_str = ""
