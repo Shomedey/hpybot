@@ -13,19 +13,22 @@ class DiscordBot(discord.Client):
 		self.db = sqlite3.connect("databases/hpybot.db") # DATABASE
 		
 	def sql(*args):
-		cursor = self.database.cursor()
+		cursor = self.db.cursor()
 		if len(args) != 0:
 			for arg in args:
 				cursor.execute(arg)
-			self.database.commit()
+			self.db.commit()
 		liste = cursor.fetchall()
-		cursor.close()
 		if len(liste) != 0:
 			return liste
 		return None
 		
 	def add_command(self, object):
 		self.commands.append(object)
+		try:
+			self.loop.create_task(object.on_loaded())
+		except Exception as e:
+			self.log('[{}] {}: {}'.format(object.__name__, type(e).__name__, e))
 		return True
 		
 	def load_command(self, object):
@@ -73,8 +76,7 @@ class DiscordBot(discord.Client):
 			for file in os.listdir("commands"):
 				if file.endswith('.py'):
 					try:
-						command = self.load_command("commands." + file[:-3])
-						self.loop.create_task(command.on_loaded())
+						self.load_command("commands." + file[:-3])
 					except Exception as e:
 						self.unload_command(file[:-3])
 						self.log('La ou le groupe de commande(s) {} n\'a pas pu être chargé.'.format(file))
