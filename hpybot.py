@@ -12,7 +12,7 @@ class DiscordBot(discord.Client):
 		self.config = configuration # BOT CONFIGURATION
 		self.db = sqlite3.connect("databases/hpybot.db") # DATABASE
 		
-	def sql(*args):
+	def sql(self, *args):
 		cursor = self.db.cursor()
 		if len(args) != 0:
 			for arg in args:
