@@ -176,4 +176,4 @@ if configuration["token"] in ["YOUR_TOKEN_HERE", "token", "", None]:
 			
 # Démarrage du bot
 client = DiscordBot()
-client.run(configuration["token"])
+client.run(configuration["token"], bot=not configuration["selfbot"])

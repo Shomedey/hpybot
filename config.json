@@ -2,6 +2,8 @@
 	"token": "YOUR_TOKEN_HERE",
 	"prefixs": [
 			"§§",
-			"||"
-		]
+			"||",
+			"&&"
+		],
+	"selfbot": false
 }
