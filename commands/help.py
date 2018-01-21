@@ -14,11 +14,11 @@ class ListingCommands(C):
 					function = getattr(command, element) # Get the function of all commands in a file
 					if function.__class__.__name__ == "method" and element.startswith("cmd_"): # If it's a "method" and name startswith ("cmd_")
 						if function.__doc__ != None: # And if there is a docstring
-							finalMessage += "**["+element[4:]+"](https://github.com/Dannyiy/hpybot)**   •   "+function.__doc__.split("\n")[0]+"\n" # Add the FIRST LINE to the finalMessage
+							finalMessage += "**["+self.bot.config["prefixs"][0]+element[4:]+"](https://github.com/Dannyiy/hpybot)**   •   "+function.__doc__.split("\n")[0]+"\n" # Add the FIRST LINE to the finalMessage
 			embed = E()
 			embed.description = finalMessage
 			embed.set_footer(text=str(message.author), icon_url=message.author.avatar_url_as(format="png"))
-			embed.title = "ﾠﾠﾠ▬ ﾠ LISTE DES COMMANDES ﾠ ▬"
+			embed.title = "ﾠﾠﾠ▬ ﾠ COMMAND LIST ﾠ ▬"
 			embed.colour = 0x32363b
 			embed.set_thumbnail(url=self.bot.user.avatar_url_as(format="png"))
 			await message.channel.send(None, embed=embed)
