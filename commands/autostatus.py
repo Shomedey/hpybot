@@ -12,21 +12,19 @@ class AutoStatus(C):
 		appinfo = await self.bot.application_info()
 		self.owner = appinfo.owner
 		self.last_guild = "X"
-		self.tmp = False
-		exists = True
-		try:
-			self.bot.sql("CREATE TABLE bots (id INTEGER NOT NULL PRIMARY KEY, AutoStatus VARCHAR(255) DEFAULT '')")
-			exists = False
-		except:
-			pass
-		if exists == False:
-			self.bot.sql("INSERT INTO bots (id) VALUES (%s)" %(self.bot.user.id))
-		self.status = self.bot.sql("SELECT AutoStatus FROM bots WHERE ID = %s" %(self.bot.user.id))[0][0]
+		try: self.bot.sql("CREATE TABLE bots (id INTEGER NOT NULL PRIMARY KEY)")
+		except: pass
+		try: self.bot.sql("INSERT INTO bots (id) VALUES (%s)" %(self.bot.user.id))
+		except: pass
+		try: self.bot.sql("ALTER TABLE bots ADD AutoStatus VARCHAR(255) DEFAULT ''")
+		except: pass
 		await self.editStatus()
+		
+	def get(self):
+		return self.bot.sql("SELECT AutoStatus FROM bots WHERE ID = %s" %(self.bot.user.id))[0][0]
 		
 	def set(self, newStatus):
 		self.bot.sql("UPDATE bots SET AutoStatus = '%s' WHERE id = %s" %(newStatus, self.bot.user.id))
-		self.status = newStatus
 		
 	async def on_member_join(self, member):
 		await self.editStatus()
@@ -45,7 +43,7 @@ class AutoStatus(C):
 	async def cmd_setstatus(self, message, *args):
 		if message.author.id == self.owner.id:
 			if len(args) == 0:
-				await message.channel.send(None, embed=E(message.author, """**What do you want to set for the new message?**
+				await message.channel.send(None, embed=E(message.author, """**What do you want to set for the new status?**
 • $users_count ▬ Count of users
 • $guilds_count ▬ Count of guilds
 • $last_guild ▬ Last guild's name joined
@@ -73,10 +71,9 @@ class AutoStatus(C):
 		await self.editStatus()
 		
 	async def editStatus(self):
-		if self.status != "" and not self.tmp:
-			self.tmp = True
+		status = self.get()
+		if status != "":
 			type = 0
-			status = self.status
 			status = status.lower().replace("$guilds_count", str(len(self.bot.guilds)))
 			status = status.lower().replace("$users_count", str(len(self.bot.users)))
 			status = status.lower().replace("$last_guild", self.last_guild)
@@ -97,8 +94,6 @@ class AutoStatus(C):
 							name=status
 						)
 				)
-			await asyncio.sleep(60)
-			self.tmp = False
 	
 def load(client):
 	client.add_command(AutoStatus(client))
