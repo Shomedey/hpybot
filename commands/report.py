@@ -21,6 +21,8 @@ class ReportSystem(C):
 		except: pass
 		if channel != None:
 			self.bot.sql("UPDATE guilds SET ReportSystem_Channel = '%s' WHERE id = %s" %(channel.id, guild.id))
+		else:
+			self.bot.sql("UPDATE guilds SET ReportSystem_Channel = '0' WHERE id = %s" %(guild.id))
 		
 	async def cmd_report(self, message, *args):
 		"""Report someone in this server.
