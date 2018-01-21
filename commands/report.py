@@ -19,7 +19,8 @@ class ReportSystem(C):
 	def set(self, guild, channel):
 		try: self.bot.sql("INSERT INTO guilds (id) VALUES (%s)" %(guild.id))
 		except: pass
-		self.bot.sql("UPDATE guilds SET ReportSystem_Channel = '%s' WHERE id = %s" %(channel.id, guild.id))
+		if channel != None:
+			self.bot.sql("UPDATE guilds SET ReportSystem_Channel = '%s' WHERE id = %s" %(channel.id, guild.id))
 		
 	async def cmd_report(self, message, *args):
 		"""Report someone in this server.
