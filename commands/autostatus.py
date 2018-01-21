@@ -41,6 +41,9 @@ class AutoStatus(C):
 		await self.editStatus()
 		
 	async def cmd_setstatus(self, message, *args):
+		"""Set the auto-status for your bot.
+		
+{0}setprefix [MESSAGE]"""
 		if message.author.id == self.owner.id:
 			if len(args) == 0:
 				await message.channel.send(None, embed=E(message.author, """**What do you want to set for the new status?**
@@ -94,6 +97,8 @@ class AutoStatus(C):
 							name=status
 						)
 				)
+		else:
+			await self.bot.change_presence(game=None, status=self.discord.Status.online)
 	
 def load(client):
 	client.add_command(AutoStatus(client))

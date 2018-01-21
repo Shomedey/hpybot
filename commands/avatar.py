@@ -5,7 +5,9 @@ import utils.answers as A
 class Avatar(C):
 
 	async def cmd_avatar(self, message, *args):
-		"""Get the avatar from an user or the server."""
+		"""Get the avatar from an user or the server.
+		
+{0}avatar <@user OR "server">"""
 		if len(args) != 0:
 			serverMode = False
 			user = (utils.find.user(args[0], guild=message.guild))
