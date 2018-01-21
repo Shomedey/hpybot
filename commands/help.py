@@ -3,7 +3,7 @@ from discord import Embed as E
 
 class ListingCommands(C):
 
-	async def help(self, message, *args):
+	async def cmd_help(self, message, *args):
 		"""Get the list of all commands available
 		
 {0}help - get the list of all commands available"""
