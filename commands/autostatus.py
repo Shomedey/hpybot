@@ -9,8 +9,11 @@ class AutoStatus(C):
 	Only works if you're the bot owner!
 	"""
 	async def on_loaded(self):
-		appinfo = await self.bot.application_info()
-		self.owner = appinfo.owner
+		if self.bot.user.bot:
+			appinfo = await self.bot.application_info()
+			self.owner = appinfo.owner
+		else:
+			self.owner = self.bot.user
 		self.last_guild = "X"
 		try: self.bot.sql("CREATE TABLE bots (id INTEGER NOT NULL PRIMARY KEY)")
 		except: pass
