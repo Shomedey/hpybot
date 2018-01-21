@@ -10,7 +10,7 @@ class DiscordBot(discord.Client):
 		self.discord = discord
 		self.loaded = False
 		self.config = configuration # BOT CONFIGURATION
-		self.db = sqlite3.connect("data/hpybot.db") # DATABASE
+		self.db = sqlite3.connect("databases/hpybot.db") # DATABASE
 		
 	def sql(*args):
 		cursor = self.database.cursor()
@@ -26,6 +26,7 @@ class DiscordBot(discord.Client):
 		
 	def add_command(self, object):
 		self.commands.append(object)
+		return True
 		
 	def load_command(self, object):
 		if object.__class__ == str:
@@ -40,6 +41,7 @@ class DiscordBot(discord.Client):
 		else:
 			object.load(self)
 			self.log("Loaded file {0}".format(object.__name__[9:]+".py"))
+		return object
 			
 	def unload_command(self, object):
 		if object.__class__ == str:
@@ -47,6 +49,7 @@ class DiscordBot(discord.Client):
 				if object in command.__class__.__name__:
 					del sys.modules[command.__class__.__name__]
 					self.commands.remove(command)
+		return True
 			
 	def del_command(self, object):
 		self.unload_command(object)
@@ -57,6 +60,7 @@ class DiscordBot(discord.Client):
 		else:
 			texte = "[{0}] {1}".format(str(self.user), str(message))
 		print(texte)
+		return True
 		
 	async def on_connect(self):
 		self.log("est maintenant connecté à Discord", me=True)
@@ -69,14 +73,12 @@ class DiscordBot(discord.Client):
 			for file in os.listdir("commands"):
 				if file.endswith('.py'):
 					try:
-						self.load_command("commands." + file[:-3])
+						command = self.load_command("commands." + file[:-3])
+						self.loop.create_task(command.on_loaded())
 					except Exception as e:
 						self.unload_command(file[:-3])
 						self.log('La ou le groupe de commande(s) {} n\'a pas pu être chargé.'.format(file))
 						self.log('→ {}: {}'.format(type(e).__name__, e))
-						
-			for command in self.commands:
-				self.loop.create_task(command.on_loaded())
 		
 		for command in self.commands:
 			self.loop.create_task(command.on_ready())
