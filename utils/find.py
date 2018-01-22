@@ -54,7 +54,7 @@ def role(abc, guild=None):
 				if role_id == role.id:
 					return role
 			for role in guild.roles:
-				if abc in role.name:
+				if abc.lower() in role.name.lower():
 					return role
 			return None
 		else:
