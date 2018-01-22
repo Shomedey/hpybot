@@ -1,5 +1,8 @@
 class UnsupportedType(Exception):
 	pass
+	
+class GuildNotDefined(Exception):
+	pass
 
 def user(abc, guild=None):
 	if abc.__class__ == int:
@@ -30,3 +33,29 @@ def user(abc, guild=None):
 					return member
 	else:
 		raise UnsupportedType("Type {0} unsupported.".format(abc.__class__.__name__))
+
+def role(abc, guild=None):
+	if guild == None:
+		raise GuildNotDefined("Guild not defined.")
+	else:
+		if abc.__class__ == int:
+			for role in guild.roles:
+				if abc == role.id:
+					return role
+			return None
+		elif abc.__class__ == str:
+			role_id_str = ""
+			for char in abc:
+				if char.isdigit():
+					role_id_str += char
+			try: role_id = int(role_id_str)
+			except: role_id = 0
+			for role in guild.roles:
+				if role_id == role.id:
+					return role
+			for role in guild.roles:
+				if abc in role.name:
+					return role
+			return None
+		else:
+			raise UnsupportedType("Type {0} unsupported.".format(abc.__class__.__name__))
