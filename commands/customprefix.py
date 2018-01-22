@@ -21,6 +21,7 @@ class CustomPrefix(C):
 		self.bot.sql("UPDATE guilds SET CustomPrefix_prefix = '%s' WHERE id = %s" %(value, guild.id))
 		
 	async def cmd_setprefix(self, message, *args):
+		"""Edit the prefix for the server."""
 		if self.bot.user.bot:
 			if message.author.guild_permissions.manage_guild:
 				if len(args) > 0:
